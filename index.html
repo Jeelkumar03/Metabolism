@@ -14,6 +14,7 @@
   --enzyme:#1D6BB5;--enzyme-soft:#DCEAF8;--on-enzyme:#FFFFFF;
   --carbon:#4E3A96;--phosphate:#CF2F6C;--atp:#D99A00;--gtp:#B8740A;--redox:#16895E;
   --water:#2F86CF;--gas:#7C8499;--proton:#8A90A8;--coa:#8B53C4;
+  --etc:#C2410C;--electron:#0891B2;--hplus:#D92D4A;--oxy:#0E8F8A;--quinone:#A16207;--lipid:#E2CB8F;--lipid-tail:#F6EDD6;--ims:#FBEEF0;--matrix:#EAF2FA;
   --glyco:#5B3FA0;--gng:#0B7F86;--tca:#B3261E;--good:#16895E;--bad:#C0392B;
   --shadow:0 1px 2px rgba(26,31,58,.06),0 8px 24px rgba(26,31,58,.06);
   --display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
@@ -27,6 +28,7 @@
     --enzyme:#5AA8F0;--enzyme-soft:#1F3560;--on-enzyme:#0E1430;
     --carbon:#B3A5F5;--phosphate:#F2689B;--atp:#F4BE3C;--gtp:#E6A13A;--redox:#43CF96;
     --water:#62B2F2;--gas:#A3AAC0;--proton:#9AA0BC;--coa:#C394F2;
+  --etc:#FB923C;--electron:#3DD8F2;--hplus:#FF6B81;--oxy:#34D1C9;--quinone:#F2C94C;--lipid:#8C7440;--lipid-tail:#2B2A26;--ims:#2B1F38;--matrix:#172649;
     --glyco:#A898F2;--gng:#3CC6CC;--tca:#F0705F;--good:#43CF96;--bad:#F07A6A;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.25);color-scheme:dark;
   }
@@ -37,6 +39,7 @@
   --enzyme:#5AA8F0;--enzyme-soft:#1F3560;--on-enzyme:#0E1430;
   --carbon:#B3A5F5;--phosphate:#F2689B;--atp:#F4BE3C;--gtp:#E6A13A;--redox:#43CF96;
   --water:#62B2F2;--gas:#A3AAC0;--proton:#9AA0BC;--coa:#C394F2;
+  --etc:#FB923C;--electron:#3DD8F2;--hplus:#FF6B81;--oxy:#34D1C9;--quinone:#F2C94C;--lipid:#8C7440;--lipid-tail:#2B2A26;--ims:#2B1F38;--matrix:#172649;
   --glyco:#A898F2;--gng:#3CC6CC;--tca:#F0705F;--good:#43CF96;--bad:#F07A6A;
   --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.25);color-scheme:dark;
 }
@@ -79,6 +82,41 @@ button,select,input{font:inherit;color:inherit}
 .stage{background:var(--panel);border:1px solid var(--line);border-radius:22px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
 .stage .scroll{height:calc(100vh - 200px);min-height:520px;overflow:auto;overscroll-behavior:contain}
 .stage svg.map{display:block;width:100%;height:auto;min-width:660px}
+.etc-ims{fill:var(--ims)}.etc-matrix{fill:var(--matrix)}.etc-tails{fill:var(--lipid-tail)}
+.etc-tail{fill:none;stroke:var(--lipid);stroke-width:1.4;opacity:.55}.etc-head{fill:var(--lipid)}
+.zone{font:800 15px var(--display);fill:var(--ink)}.zone-sub{font:600 12px var(--body);fill:var(--muted)}.zone-sub.strong{font-weight:700;fill:var(--ink)}
+.zone-pill{fill:var(--panel);opacity:.9;stroke:var(--line)}
+.meter-bg{fill:var(--panel);stroke:var(--line)}.meter-fill{fill:var(--hplus);transition:width .6s}
+.cx,.cx-label{cursor:pointer}
+.cx-body{fill:color-mix(in srgb,var(--enzyme) 78%,var(--panel));stroke:var(--enzyme);stroke-width:2;transition:stroke .3s}
+.cx-body.alt{fill:color-mix(in srgb,var(--enzyme) 52%,var(--panel))}.cx-body.ring{fill:color-mix(in srgb,var(--enzyme) 62%,var(--panel))}
+.cx.now .cx-body{stroke:var(--atp);stroke-width:3.5}
+.cx:hover .cx-body{stroke-width:3}
+.cx.now{filter:drop-shadow(0 0 12px color-mix(in srgb,var(--enzyme) 55%,transparent))}
+.channel{stroke:var(--on-enzyme);opacity:.35;stroke-width:3;stroke-dasharray:4 5;stroke-linecap:round}
+.dimer{stroke:var(--on-enzyme);opacity:.3;stroke-dasharray:6 6}
+.site{fill:var(--on-enzyme);stroke:var(--enzyme);stroke-width:1.5}.site.fes{fill:#E8B04A}.site.heme{fill:var(--hplus)}
+.site.fmn,.site.fad{fill:var(--redox)}.site.qs{fill:var(--quinone)}.site.cu{fill:#C87533}.site.bnc{fill:var(--oxy)}
+.site-lab{font:700 11px var(--body);fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:3px;pointer-events:none}
+.cx-name{font:800 14px var(--display);fill:var(--ink)}.cx-sub{font:600 11.5px var(--body);fill:var(--muted)}
+.stalk{fill:none;stroke:color-mix(in srgb,var(--enzyme) 60%,var(--panel));stroke-width:9;stroke-linecap:round}
+.cstripe{stroke:var(--on-enzyme);stroke-width:3;stroke-linecap:round}
+.lobe{stroke:var(--enzyme);stroke-width:2;transition:fill .5s}
+.lobe.alpha{fill:var(--enzyme-soft)}.lobe.beta{fill:color-mix(in srgb,var(--enzyme) 70%,var(--panel))}
+.lobe-lab{font:800 13px var(--display);fill:var(--ink)}
+.O .lobe.beta{fill:color-mix(in srgb,var(--enzyme) 30%,var(--panel))}.L .lobe.beta{fill:color-mix(in srgb,var(--atp) 50%,var(--panel))}.T .lobe.beta{fill:var(--atp)}
+.gamma{fill:var(--panel);stroke:var(--enzyme);stroke-width:2.5}.gamma-cam{stroke:var(--atp);stroke-width:5;stroke-linecap:round}
+.hp,.eon,.qd,.cyc{pointer-events:none}
+.hp circle{fill:var(--hplus)}.hp text{font:800 13px var(--body);fill:#fff}.hp.faint{opacity:.45}
+.hp-in{animation:drift 4s ease-in-out infinite}
+@keyframes drift{50%{transform:translate(3px,-4px)}}
+.eon circle{fill:var(--electron)}.eon text{font:800 8px var(--body);fill:var(--panel)}
+.qd ellipse{fill:var(--panel);stroke:var(--quinone);stroke-width:2.2}.qd text{font:800 10.5px var(--body);fill:var(--quinone)}
+.qd.red ellipse{fill:var(--quinone)}.qd.red text{fill:var(--panel)}
+.cyc circle{fill:var(--panel);stroke:var(--etc);stroke-width:2.2}.cyc .heme{fill:none;stroke:var(--etc);stroke-width:2}
+.cyc.red circle{fill:var(--etc)}.cyc.red .heme{stroke:var(--panel)}.cyc text{font:700 10.5px var(--body);fill:var(--muted)}
+.etc-note{font:800 14px var(--display);fill:var(--muted)}
+.card .epath{font-size:14px}.card .epath b{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .stage-hint{transition:opacity .3s}
 .stage-cap{position:absolute;left:12px;right:12px;bottom:12px;font-size:15px;line-height:1.45;color:var(--ink);background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);border-left:4px solid var(--enzyme);padding:9px 14px;border-radius:14px;box-shadow:var(--shadow);pointer-events:none;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
 .stage.talking .stage-cap{opacity:1;transform:none}
@@ -273,7 +311,7 @@ button,select,input{font:inherit;color:inherit}
   .page{padding:16px 12px 40px}
 }
 @media (prefers-reduced-motion:reduce){
-  .edge.active,.enzyme-live .ring,.node.is-sub rect{animation:none}
+  .edge.active,.enzyme-live .ring,.node.is-sub rect,.hp-in{animation:none}
   .card.swap{animation:none}
 }
 </style>
@@ -288,6 +326,7 @@ button,select,input{font:inherit;color:inherit}
     <a href="#/glycolysis" style="--c:var(--glyco)"><i></i>Glycolysis</a>
     <a href="#/gluconeogenesis" style="--c:var(--gng)"><i></i>Gluconeogenesis</a>
     <a href="#/krebs" style="--c:var(--tca)"><i></i>Krebs cycle</a>
+    <a href="#/etc" style="--c:var(--etc)"><i></i>Electron transport</a>
     <a href="#/regulation" style="--c:var(--atp)"><i></i>Regulation</a>
   </nav>
   <div class="top-actions">
@@ -306,6 +345,7 @@ button,select,input{font:inherit;color:inherit}
   <section class="page" id="page-glycolysis"></section>
   <section class="page" id="page-gluconeogenesis"></section>
   <section class="page" id="page-krebs"></section>
+  <section class="page" id="page-etc"></section>
   <section class="page" id="page-regulation"></section>
 </main>
 <script>
@@ -314,7 +354,10 @@ const COF = {
   'ATP':{k:'atp',s:1},'ADP':{k:'atp',s:0},'GTP':{k:'gtp',s:1},'GDP':{k:'gtp',s:0},
   'NADH':{k:'redox',s:1},'NAD⁺':{k:'redox',s:0},'FADH₂':{k:'redox',s:1},'FAD':{k:'redox',s:0},
   'Pᵢ':{k:'phosphate',s:1},'H₂O':{k:'water',s:1},'CO₂':{k:'gas',s:1},'HCO₃⁻':{k:'gas',s:1},
-  'H⁺':{k:'proton',s:0},'CoA-SH':{k:'coa',s:1}
+  'H⁺':{k:'proton',s:0},'CoA-SH':{k:'coa',s:1},
+  'O₂':{k:'oxy',s:1},'H⁺ (IMS)':{k:'hplus',s:1},'H⁺ (matrix)':{k:'hplus',s:0},'e⁻':{k:'electron',s:1},
+  'Q':{k:'quinone',s:0},'QH₂':{k:'quinone',s:1},'Cyt c²⁺':{k:'etc',s:1},'Cyt c³⁺':{k:'etc',s:0},
+  'Succinate':{k:'carbon',s:0},'Fumarate':{k:'carbon',s:0}
 };
 const LEDGER_ALIAS = {'HCO₃⁻':'CO₂'};
 
@@ -638,6 +681,9 @@ const SFX = (() => {
     pop() { tone({f:520, f2:820, dur:.09, vol:.16}); },
     tick(v = .5) { tone({f:500 + v * 900, dur:.035, vol:.07, type:'triangle', attack:.002}); },
     select() { tone({f:660, dur:.07, vol:.12}); tone({f:990, at:.06, dur:.09, vol:.1}); },
+    electron() { tone({f:1500, f2:2400, dur:.06, vol:.07}); },
+    proton() { tone({f:330, f2:520, type:'triangle', dur:.09, vol:.11}); },
+    rotor() { noise({f:180, f2:700, dur:.7, vol:.1, q:4}); tone({f:90, f2:140, type:'sawtooth', dur:.6, vol:.05, attack:.1}); },
     complete() { [523, 659, 784, 1047].forEach((f, k) => tone({f, type:'triangle', at:k * .11, dur:.5, vol:.15})); }
   };
   let lastTick = 0;
@@ -654,9 +700,13 @@ const SFX = (() => {
 })();
 
 const SPEECH_MAP = [
-  [/ΔG′°/g, 'delta G standard'], [/HCO₃⁻/g, 'bicarbonate'], [/Mg²⁺/g, 'magnesium'], [/Ca²⁺/g, 'calcium'],
+  [/ΔG′°/g, 'delta G standard'], [/Cyt c²⁺/g, 'reduced cytochrome c'], [/Cyt c³⁺/g, 'oxidised cytochrome c'],
+  [/H⁺ \(IMS\)/g, 'H plus, intermembrane side'], [/H⁺ \(matrix\)/g, 'H plus, matrix side'], [/\bIMS\b/g, 'intermembrane space'],
+  [/QH₂/g, 'Q H 2'], [/(\d+) e⁻/g, '$1 electrons'], [/e⁻/g, 'electron'], [/½/g, 'half '], [/\bFe[–-]S\b/g, 'iron-sulfur'],
+  [/\bFMN\b/g, 'F M N'], [/\bCu([AB])\b/g, 'copper $1'], [/F₀F₁/g, 'F O F 1'], [/F₀/g, 'F O'], [/F₁/g, 'F 1'], [/bc₁/g, 'B C 1'],
+  [/\bc₁\b/g, 'c 1'], [/\bUCP1\b/g, 'U C P 1'], [/\bDNP\b/g, 'D N P'], [/\ba₃\b/g, 'a 3'], [/\bQo\b/g, 'Q O'], [/\bQi\b/g, 'Q I'], [/HCO₃⁻/g, 'bicarbonate'], [/Mg²⁺/g, 'magnesium'], [/Ca²⁺/g, 'calcium'],
   [/NADH\/NAD⁺/g, 'N A D H to N A D plus'], [/NAD⁺/g, 'N A D plus'], [/NADPH/g, 'N A D P H'], [/NADH/g, 'N A D H'],
-  [/FADH₂/g, 'F A D H 2'], [/\bFAD\b/g, 'F A D'], [/CO₂/g, 'C O 2'], [/H₂O/g, 'water'], [/Pᵢ/g, 'inorganic phosphate'],
+  [/FADH₂/g, 'F A D H 2'], [/\bFAD\b/g, 'F A D'], [/CO₂/g, 'C O 2'], [/O₂/g, 'oxygen'], [/H₂O/g, 'water'], [/Pᵢ/g, 'inorganic phosphate'],
   [/H⁺/g, 'H plus'], [/CoA-SH/g, 'coenzyme A'], [/\bCoA\b/g, 'co-A'], [/α-KG/g, 'alpha-keto-glutarate'],
   [/PEPCK/g, 'P E P C K'], [/\bPEP\b/g, 'P E P'], [/FBPase/g, 'F B Pase'], [/\bPFK/g, 'P F K'], [/\bPDH\b/g, 'P D H'],
   [/\bMDH\b/g, 'M D H'], [/\bPKA\b/g, 'P K A'], [/F2,6BP/g, 'fructose 2,6-bisphosphate'], [/\bG6P\b/g, 'glucose 6-phosphate'],
@@ -878,7 +928,7 @@ class PathwayView {
     this.root.innerHTML = `
       <div class="pw-head">
         <h1>${d.title}<small>${d.lede}</small></h1>
-        <div class="legend" aria-label="Colour key">
+        <div class="legend" aria-label="Colour key">${d.legend || `
           <span><b style="--c:var(--enzyme)"></b>Enzyme</span>
           <span><b style="--c:var(--carbon)"></b>Carbon atom</span>
           <span><b style="--c:var(--phosphate)"></b>Phosphate</span>
@@ -886,7 +936,7 @@ class PathwayView {
           <span><b class="sq" style="--c:var(--gtp)"></b>GTP / GDP</span>
           <span><b class="sq" style="--c:var(--redox)"></b>NADH / FADH₂</span>
           <span><b class="sq ol" style="--c:var(--redox)"></b>Outline = spent or oxidised</span>
-          <span><b style="--c:var(--atp)"></b>Control point</span>
+          <span><b style="--c:var(--atp)"></b>Control point</span>`}
         </div>
       </div>
       <div class="pw-body">
@@ -1446,6 +1496,550 @@ class PathwayView {
     else if (e.key === ' ' && !e.target.closest('button,[role="button"]')) { e.preventDefault(); this.togglePlay(); }
   }
 }
+
+/* ================= Electron transport chain ================= */
+const ETC = {
+  id:'etc', title:'Electron transport chain', accent:'--etc', W:1000, H:760,
+  lede:'Four complexes in the inner mitochondrial membrane pass electrons from NADH and FADH₂ down to oxygen and use the energy to pump protons outward. ATP synthase lets the protons flow back and turns that flow into ATP.',
+  legend:`
+    <span><b class="sq" style="--c:var(--enzyme)"></b>Complex / enzyme</span>
+    <span><b style="--c:var(--electron)"></b>Electron (e⁻)</span>
+    <span><b style="--c:var(--hplus)"></b>Proton (H⁺)</span>
+    <span><b style="--c:var(--quinone)"></b>Ubiquinone Q / QH₂</span>
+    <span><b style="--c:var(--etc)"></b>Cytochrome c</span>
+    <span><b class="sq" style="--c:var(--redox)"></b>NADH / FADH₂</span>
+    <span><b class="sq" style="--c:var(--atp)"></b>ATP / ADP</span>
+    <span><b class="sq ol" style="--c:var(--redox)"></b>Outline = oxidised</span>`,
+  nodes:{}, start:[], ledgerTitle:'Running balance per NADH + FADH₂',
+  ledger:['NADH','FADH₂','O₂','H⁺ (IMS)','ATP','H₂O'],
+  overall:'NADH + FADH₂ + O₂ + 4 ADP + 4 Pᵢ → NAD⁺ + FAD + 6 H₂O + ≈4 ATP',
+  phases:[
+    {label:'Electrons enter the chain', from:0, to:1},
+    {label:'Electrons flow to oxygen, protons are pumped', from:2, to:3},
+    {label:'The gradient drives ATP synthesis', from:4, to:4}
+  ],
+  focusAt:[{x:230, y:420}, {x:400, y:420}, {x:560, y:260}, {x:740, y:300}, {x:900, y:450}],
+  steps:[
+    {enzyme:'Complex I · NADH dehydrogenase', short:['Complex I', 'NADH dehydrogenase'], ec:'EC 7.1.1.2', cls:'Proton pump',
+     loc:'Inner membrane', dg:-69.5, dgNote:'per NADH', pump:'Pumps 4 H⁺',
+     title:'NADH + Q → NAD⁺ + QH₂',
+     eq:'NADH + H⁺ + Q + 4 H⁺ (matrix) → NAD⁺ + QH₂ + 4 H⁺ (IMS)',
+     path:'NADH → FMN → Fe–S clusters → Q',
+     in:[['NADH',1],['H⁺ (matrix)',5]], out:[['NAD⁺',1],['H⁺ (IMS)',4]],
+     what:'NADH hands two electrons to FMN at the tip of the matrix arm. They hop down a wire of iron–sulfur clusters to ubiquinone (Q), which takes two protons from the matrix and becomes ubiquinol (QH₂).',
+     more:'The energy released drives shifts along the membrane arm that pump four protons into the intermembrane space. Rotenone blocks the Q site and stops all electron flow from NADH.'},
+    {enzyme:'Complex II · Succinate dehydrogenase', short:['Complex II', 'Succinate dehydrogenase'], ec:'EC 1.3.5.1', cls:'Oxidoreductase',
+     loc:'Inner membrane', dg:-2.7, dgNote:'per succinate', pump:null,
+     title:'Succinate + Q → Fumarate + QH₂',
+     eq:'Succinate + Q → Fumarate + QH₂  (via bound FAD → FADH₂ → FAD)',
+     path:'Succinate → FAD → Fe–S clusters → Q',
+     in:[['FADH₂',1]], out:[['FAD',1]],
+     what:'This is the same enzyme as Krebs cycle step 6. Succinate gives two electrons to the covalently bound FAD, making FADH₂. The electrons pass through three iron–sulfur clusters to Q, forming a second QH₂.',
+     more:'Complex II sits in only the inner leaflet and pumps no protons. That is why an FADH₂ is worth about 1.5 ATP, while an NADH is worth about 2.5. Malonate, a succinate look-alike, inhibits it.'},
+    {enzyme:'Complex III · Cytochrome bc₁ complex', short:['Complex III', 'Cytochrome bc₁'], ec:'EC 7.1.1.8', cls:'Proton pump (Q cycle)',
+     loc:'Inner membrane', dg:-40.5, dgNote:'per QH₂', pump:'Pumps 8 H⁺',
+     title:'2 QH₂ + 4 Cyt c³⁺ → 2 Q + 4 Cyt c²⁺',
+     eq:'2 QH₂ + 4 Cyt c³⁺ + 4 H⁺ (matrix) → 2 Q + 4 Cyt c²⁺ + 8 H⁺ (IMS)',
+     path:'QH₂ → Rieske Fe–S → cyt c₁ → cyt c  (and → heme bL → bH → Qi)',
+     in:[['H⁺ (matrix)',4],['Cyt c³⁺',4]], out:[['Cyt c²⁺',4],['H⁺ (IMS)',8]],
+     what:'Each QH₂ docks at the Qo site facing the intermembrane space and releases its two protons outward. Its electrons split: one goes through the Rieske iron–sulfur protein and cytochrome c₁ to cytochrome c, the other dives through hemes bL and bH to the Qi site.',
+     more:'At Qi the diverted electrons rebuild QH₂ using matrix protons, and that QH₂ is oxidised at Qo again. This Q cycle moves four protons per QH₂. Cytochrome c carries only one electron, so it makes two trips per QH₂. Antimycin A blocks Qi.'},
+    {enzyme:'Complex IV · Cytochrome c oxidase', short:['Complex IV', 'Cytochrome c oxidase'], ec:'EC 7.1.1.9', cls:'Proton pump',
+     loc:'Inner membrane', dg:-218, dgNote:'per O₂', pump:'Pumps 4 H⁺',
+     title:'4 Cyt c²⁺ + O₂ → 4 Cyt c³⁺ + 2 H₂O',
+     eq:'4 Cyt c²⁺ + 8 H⁺ (matrix) + O₂ → 4 Cyt c³⁺ + 2 H₂O + 4 H⁺ (IMS)',
+     path:'cyt c → CuA → heme a → heme a₃–CuB → O₂',
+     in:[['Cyt c²⁺',4],['H⁺ (matrix)',8],['O₂',1]], out:[['Cyt c³⁺',4],['H₂O',2],['H⁺ (IMS)',4]],
+     what:'Cytochrome c brings one electron at a time along the outer face of the membrane. Complex IV passes each through CuA and heme a to the heme a₃–CuB centre, where four electrons and four matrix protons turn one O₂ into two waters.',
+     more:'Four more protons are pumped outward, one per electron. O₂ stays bound until it is fully reduced, so no reactive partial products escape. Cyanide, carbon monoxide and azide block this centre.'},
+    {enzyme:'ATP synthase (Complex V)', short:['ATP synthase', 'F₀F₁ · Complex V'], ec:'EC 7.1.2.2', cls:'Rotary motor',
+     loc:'Inner membrane', dg:30.5, dgNote:'per ATP made', pump:'Uses 16 H⁺', ctrl:true, noPump:true,
+     title:'4 ADP + 4 Pᵢ → 4 ATP',
+     eq:'16 H⁺ (IMS) + 4 ADP + 4 Pᵢ → 16 H⁺ (matrix) + 4 ATP + 4 H₂O',
+     path:'H⁺ → a subunit → c-ring rotor → γ stalk → β subunits',
+     in:[['H⁺ (IMS)',16],['ADP',4],['Pᵢ',4]], out:[['ATP',4],['H₂O',4]],
+     what:'Protons flow back into the matrix through the a subunit and turn the c-ring rotor. The rotor spins the central γ stalk inside the F₁ head, and each third of a turn forces one β subunit to release a finished ATP.',
+     more:'Each β site cycles through open, loose and tight states (the binding-change mechanism). In mammals about 8 protons make 3 ATP, and 1 more per ATP imports phosphate, so roughly 4 H⁺ per ATP: 2.5 ATP per NADH and 1.5 per FADH₂. Oligomycin plugs the F₀ channel.',
+     reg:'Respiratory control: the chain runs only as fast as ADP arrives, because without ADP the proton gradient backs up and stalls the pumps. Uncouplers such as DNP, or thermogenin (UCP1) in brown fat, let protons leak back without making ATP and release the energy as heat.'}
+  ],
+  summary:{title:'Two electron pairs in, four ATP out',
+    body:'One NADH and one FADH₂ pumped 16 protons (10 + 6). Flowing back through ATP synthase, they made about 4 ATP (2.5 + 1.5) and reduced one O₂ to water. Per glucose, the roughly 10 NADH and 2 FADH₂ from glycolysis, pyruvate dehydrogenase and the Krebs cycle yield about 30 to 32 ATP.'}
+};
+
+ETC.steps.forEach(s => { s.from = []; s.to = []; });
+
+const ETC_GEO = {
+  ims:258, mem:352, base:6,
+  ci:{fmn:{x:270, y:585}, fes:[{x:270, y:545}, {x:270, y:505}, {x:270, y:465}, {x:270, y:425}, {x:268, y:388}], q:{x:238, y:318}, pumps:[148, 172, 196, 220]},
+  cii:{fad:{x:400, y:478}, fes:[{x:400, y:440}, {x:400, y:402}, {x:400, y:368}], q:{x:400, y:322}},
+  ciii:{qo:{x:520, y:290}, fes:{x:522, y:232}, c1:{x:588, y:204}, dock:{x:640, y:168}, bl:{x:538, y:318}, bh:{x:572, y:334}, qi:{x:598, y:338}},
+  civ:{dock:{x:745, y:156}, cua:{x:745, y:212}, a:{x:724, y:282}, bnc:{x:768, y:302}, pumps:[712, 728]},
+  atp:{ring:{x:900, y:305}, f1:{x:900, y:556}, inIMS:{x:960, y:236}, half:{x:930, y:300}, out:{x:962, y:372}},
+  pool:{qA:{x:326, y:300}, qB:{x:462, y:306}},
+  cyt:[{x:590, y:98}, {x:630, y:98}, {x:670, y:98}, {x:710, y:98}],
+  chips:{nadh:{x:270, y:664}, succ:{x:400, y:640}, o2:{x:745, y:604}, h2o:{x:745, y:650}, adp:{x:808, y:716}, pi:{x:872, y:716}, atp:{x:940, y:716}}
+};
+
+const poly = pts => route(pts.slice(1).map((p, i) => seg(pts[i], p)));
+const frac = x => x - Math.floor(x);
+function poolPos(k) {
+  for (let t = 0; t < 40; t++) {
+    const r1 = frac(Math.sin((k + 1) * 12.9898 + t * 7.13) * 43758.5453);
+    const r2 = frac(Math.sin((k + 1) * 78.233 + t * 3.71) * 24634.6345);
+    const p = {x:34 + r1 * 940, y:70 + r2 * 62};
+    const bad = (p.x < 250 && p.y < 72) || (p.x > 560 && p.x < 750 && p.y > 74 && p.y < 124) || (p.x > 760 && p.y < 86);
+    if (!bad) return p;
+  }
+  return {x:500, y:100};
+}
+const matrixPos = k => ({x:60 + frac(Math.sin((k + 3) * 91.7) * 999.1) * 520, y:600 + frac(Math.sin((k + 5) * 37.3) * 777.7) * 70});
+
+class EtcView extends PathwayView {
+  buildSVG() {
+    const d = this.def, G = ETC_GEO;
+    const svg = this.svg = S('svg', {viewBox:`0 0 ${d.W} ${d.H}`, class:'map etc-map', role:'img',
+      'aria-label':'Electron transport chain in the inner mitochondrial membrane'});
+    const defs = S('defs', {}, svg);
+    const f = S('filter', {id:'eglow', x:'-150%', y:'-150%', width:'400%', height:'400%'}, defs);
+    S('feGaussianBlur', {stdDeviation:'3.2', result:'b'}, f);
+    const m = S('feMerge', {}, f); S('feMergeNode', {in:'b'}, m); S('feMergeNode', {in:'SourceGraphic'}, m);
+    this.L = {decor:S('g', {}, svg), cx:S('g', {}, svg), stat:S('g', {}, svg), labels:S('g', {}, svg), fx:S('g', {}, svg)};
+    this.nodeEls = {};
+    this.drawScene();
+    this.drawComplexes();
+    d.steps.forEach((st, i) => { st.pathEls = []; st.geo = {M:d.focusAt[i]}; });
+    this.scroll.appendChild(svg);
+  }
+
+  drawScene() {
+    const {W, H} = this.def, G = ETC_GEO, g = this.L.decor;
+    S('rect', {x:0, y:0, width:W, height:G.ims, class:'etc-ims'}, g);
+    S('rect', {x:0, y:G.mem, width:W, height:H - G.mem, class:'etc-matrix'}, g);
+    S('rect', {x:0, y:G.ims, width:W, height:G.mem - G.ims, class:'etc-tails'}, g);
+    let tails = '';
+    for (let x = 7; x < W; x += 14) tails += `M${x - 2} 270q-4 12 0 24t0 18M${x + 2} 270q4 12 0 24t0 18M${x - 2} 340q-4 -12 0 -24t0 -12M${x + 2} 340q4 -12 0 -24t0 -12`;
+    S('path', {d:tails, class:'etc-tail'}, g);
+    for (let x = 7; x < W; x += 14) { S('circle', {cx:x, cy:G.ims + 7, r:6.4, class:'etc-head'}, g); S('circle', {cx:x, cy:G.mem - 7, r:6.4, class:'etc-head'}, g); }
+    const lab = (x, y, t, cls = 'zone') => { const e = S('text', {x, y, class:cls}, g); e.textContent = t; return e; };
+    lab(22, 34, 'Intermembrane space'); lab(22, 52, 'high [H⁺] · positive side', 'zone-sub');
+    lab(22, 386, 'Matrix'); lab(22, 404, 'low [H⁺] · negative side', 'zone-sub');
+    const mem = S('g', {}, g);
+    S('rect', {x:14, y:292, width:108, height:26, rx:13, class:'zone-pill'}, mem);
+    S('text', {x:68, y:310, 'text-anchor':'middle', class:'zone-sub strong'}, mem).textContent = 'Inner membrane';
+    const meter = S('g', {transform:'translate(786 22)'}, g);
+    S('text', {x:0, y:12, class:'zone-sub strong'}, meter).textContent = 'Proton gradient';
+    S('rect', {x:0, y:20, width:190, height:12, rx:6, class:'meter-bg'}, meter);
+    this.meter = S('rect', {x:0, y:20, width:0, height:12, rx:6, class:'meter-fill'}, meter);
+    this.meterTxt = S('text', {x:190, y:50, 'text-anchor':'end', class:'zone-sub'}, meter);
+    this.matrixProtons = S('g', {}, g);
+    for (let k = 0; k < 7; k++) this.protonEl(this.matrixProtons, matrixPos(k), true);
+  }
+
+  drawComplexes() {
+    const G = ETC_GEO, g = this.L.cx, st = this.def.steps;
+    const site = (p, parent, cls = 'site') => S('circle', {cx:p.x, cy:p.y, r:4.6, class:cls}, parent);
+    const tag = (p, t, parent, a = 'start', dx = 8) => { const e = S('text', {x:p.x + (a === 'end' ? -dx : dx), y:p.y + 4, 'text-anchor':a, class:'site-lab'}, parent); e.textContent = t; };
+    this.cxEls = [];
+    const mk = (i, draw, labAt) => {
+      const c = S('g', {class:'cx', tabindex:'0', role:'button', 'aria-label':`Step ${i + 1}: ${st[i].enzyme}`}, g);
+      draw(c);
+      const lg = S('g', {class:'cx-label'}, this.L.labels);
+      const [a, b] = st[i].short;
+      S('text', {x:labAt.x, y:labAt.y, 'text-anchor':'middle', class:'cx-name'}, lg).textContent = a;
+      S('text', {x:labAt.x, y:labAt.y + 16, 'text-anchor':'middle', class:'cx-sub'}, lg).textContent = b;
+      if (st[i].ctrl) S('circle', {cx:labAt.x + textW(a, 14) / 2 + 12, cy:labAt.y - 5, r:4.5, class:'enz-dot'}, lg);
+      const go = () => this.goTo(i, true);
+      [c, lg].forEach(el => { el.addEventListener('click', go); el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }); });
+      st[i].labelEl = lg; this.cxEls[i] = c;
+    };
+    mk(0, c => {
+      S('rect', {x:130, y:250, width:172, height:112, rx:26, class:'cx-body'}, c);
+      S('rect', {x:238, y:330, width:64, height:282, rx:30, class:'cx-body'}, c);
+      G.ci.pumps.forEach(x => S('line', {x1:x, y1:262, x2:x, y2:350, class:'channel'}, c));
+      site(G.ci.fmn, c, 'site fmn'); tag(G.ci.fmn, 'FMN', c, 'end', 40);
+      G.ci.fes.forEach(p => site(p, c, 'site fes')); tag(G.ci.fes[2], 'Fe–S', c, 'end', 40);
+      site(G.ci.q, c, 'site qs'); tag(G.ci.q, 'Q', c, 'end', 12);
+    }, {x:216, y:226});
+    mk(1, c => {
+      S('rect', {x:364, y:298, width:72, height:66, rx:18, class:'cx-body'}, c);
+      S('rect', {x:352, y:350, width:96, height:160, rx:44, class:'cx-body'}, c);
+      site(G.cii.fad, c, 'site fad'); tag(G.cii.fad, 'FAD', c, 'end', 12);
+      G.cii.fes.forEach(p => site(p, c, 'site fes'));
+      site(G.cii.q, c, 'site qs'); tag(G.cii.q, 'Q', c, 'end', 12);
+    }, {x:400, y:536});
+    mk(2, c => {
+      S('rect', {x:490, y:172, width:130, height:296, rx:32, class:'cx-body'}, c);
+      S('line', {x1:555, y1:180, x2:555, y2:460, class:'dimer'}, c);
+      const C = G.ciii;
+      site(C.qo, c, 'site qs'); tag(C.qo, 'Qo', c, 'end', 10);
+      site(C.fes, c, 'site fes'); tag(C.fes, 'Fe–S', c, 'end', 10);
+      site(C.c1, c, 'site heme'); tag(C.c1, 'c₁', c, 'start', 9);
+      site(C.bl, c, 'site heme'); site(C.bh, c, 'site heme'); tag(C.bh, 'b', c, 'start', 8);
+      site(C.qi, c, 'site qs'); tag({x:C.qi.x, y:C.qi.y + 16}, 'Qi', c, 'start', 0);
+    }, {x:548, y:146});
+    mk(3, c => {
+      S('rect', {x:690, y:176, width:110, height:292, rx:30, class:'cx-body'}, c);
+      const C = G.civ;
+      C.pumps.forEach(x => S('line', {x1:x, y1:262, x2:x, y2:350, class:'channel'}, c));
+      site(C.cua, c, 'site cu'); tag(C.cua, 'CuA', c, 'start', 9);
+      site(C.a, c, 'site heme'); tag(C.a, 'a', c, 'end', 8);
+      site(C.bnc, c, 'site bnc'); tag(C.bnc, 'a₃–CuB', c, 'start', 9);
+    }, {x:745, y:500});
+    mk(4, c => {
+      const A = G.atp;
+      S('rect', {x:946, y:262, width:32, height:92, rx:12, class:'cx-body alt'}, c);
+      S('path', {d:'M962 354 L962 470 Q962 490 944 494', class:'stalk'}, c);
+      S('rect', {x:893, y:340, width:14, height:150, rx:7, class:'cx-body'}, c);
+      const ring = S('g', {}, c);
+      S('ellipse', {cx:A.ring.x, cy:A.ring.y, rx:44, ry:56, class:'cx-body ring'}, ring);
+      this.cStripes = [...Array(8)].map(() => S('line', {y1:A.ring.y - 50, y2:A.ring.y + 50, class:'cstripe'}, ring));
+      this.rotorAngle = 0; this.setRotor(0);
+      this.lobes = [...Array(6)].map((_, k) => {
+        const a = -Math.PI / 2 + k * Math.PI / 3, x = A.f1.x + 52 * Math.cos(a), y = A.f1.y + 52 * Math.sin(a);
+        const lg = S('g', {transform:`translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(a * 180 / Math.PI + 90).toFixed(1)})`}, c);
+        S('ellipse', {rx:30, ry:38, class:k % 2 ? 'lobe beta' : 'lobe alpha'}, lg);
+        const t = S('text', {y:5, 'text-anchor':'middle', class:'lobe-lab', transform:`rotate(${(-(a * 180 / Math.PI + 90)).toFixed(1)})`}, lg);
+        t.textContent = k % 2 ? 'β' : 'α';
+        return {g:lg, t, beta:k % 2 === 1};
+      });
+      this.gamma = S('g', {transform:`translate(${A.f1.x} ${A.f1.y})`}, c);
+      S('circle', {r:17, class:'gamma'}, this.gamma);
+      S('path', {d:'M0 0 L0 -26', class:'gamma-cam'}, this.gamma);
+      S('circle', {cx:A.inIMS.x, cy:A.inIMS.y + 30, r:3.5, class:'site'}, c);
+    }, {x:900, y:224});
+  }
+
+  setRotor(a) {
+    const A = ETC_GEO.atp;
+    this.cStripes.forEach((l, k) => {
+      const th = a + k * Math.PI / 4, x = A.ring.x + 40 * Math.sin(th), front = Math.cos(th) > 0;
+      l.setAttribute('x1', x.toFixed(1)); l.setAttribute('x2', x.toFixed(1));
+      l.setAttribute('opacity', front ? .9 : .25);
+    });
+  }
+
+  /* ---------- particles ---------- */
+  protonEl(parent, p, faint) {
+    const g = S('g', {class:'hp' + (faint ? ' faint' : ''), transform:`translate(${p.x.toFixed(1)} ${p.y.toFixed(1)})`}, parent);
+    const inner = S('g', {class:'hp-in', style:`animation-delay:${(-frac(p.x * .37 + p.y * .11) * 4).toFixed(2)}s`}, g);
+    S('circle', {r:8.5}, inner);
+    S('text', {y:4.5, 'text-anchor':'middle'}, inner).textContent = '+';
+    return g;
+  }
+  mover(g) {
+    return {
+      g,
+      at(p, o = 1, sc = 1) { g.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) scale(${sc.toFixed(3)})`); g.setAttribute('opacity', o.toFixed(2)); },
+      remove() { g.remove(); }
+    };
+  }
+  proton(p) { const m = this.mover(this.protonEl(this.L.fx, p)); m.at(p, 0); return m; }
+  electron(p) {
+    const g = S('g', {class:'eon', filter:'url(#eglow)'}, this.L.fx);
+    S('circle', {r:6}, g); S('text', {y:3.2, 'text-anchor':'middle'}, g).textContent = 'e';
+    const m = this.mover(g); m.at(p, 0); return m;
+  }
+  quinone(parent, p, reduced) {
+    const g = S('g', {class:'qd' + (reduced ? ' red' : '')}, parent);
+    S('ellipse', {rx:16, ry:10}, g);
+    S('text', {y:4, 'text-anchor':'middle'}, g).textContent = reduced ? 'QH₂' : 'Q';
+    const m = this.mover(g); m.at(p); m.set = r => { g.classList.toggle('red', r); g.querySelector('text').textContent = r ? 'QH₂' : 'Q'; }; return m;
+  }
+  cytc(parent, p, reduced) {
+    const g = S('g', {class:'cyc' + (reduced ? ' red' : '')}, parent);
+    S('circle', {r:15}, g);
+    S('path', {d:'M-5 -5h10v10h-10z', transform:'rotate(45)', class:'heme'}, g);
+    S('text', {y:28, 'text-anchor':'middle'}, g).textContent = 'cyt c';
+    const m = this.mover(g); m.at(p); m.set = r => g.classList.toggle('red', r); return m;
+  }
+  staticChip(name, q, p) {
+    const info = COF[name] || {k:'muted', s:1}, label = (q > 1 ? q + ' ' : '') + name, w = textW(label, 12.5) + 18;
+    const g = S('g', {class:'chip', transform:`translate(${p.x} ${p.y})`}, this.L.stat);
+    S('rect', {x:-w / 2, y:-12, width:w, height:24, rx:12, style:`fill:${info.s ? `var(--${info.k})` : 'var(--panel)'};stroke:var(--${info.k})`}, g);
+    S('text', {x:0, y:4.5, 'text-anchor':'middle', style:`fill:${info.s ? 'var(--panel)' : `var(--${info.k})`}`}, g).textContent = label;
+    return g;
+  }
+  go(obj, pts, ms, alive, {ez = ease.io, fade = 0, sc0 = 1, sc1 = 1, o0 = 1, o1 = 1} = {}) {
+    const r = poly(pts);
+    return tween(ms * this.sp, (t, raw) => {
+      const o = fade ? Math.min(1, raw / fade) * (o0 + (o1 - o0) * raw) : o0 + (o1 - o0) * raw;
+      obj.at(r(t), o, sc0 + (sc1 - sc0) * t);
+    }, ez, alive);
+  }
+  async hop(pts, alive, ms = 180) {
+    const e = this.electron(pts[0]);
+    SFX.play('electron');
+    const ok = await this.go(e, pts, ms * (pts.length - 1), alive, {ez:t => t, fade:.08});
+    e.remove(); return ok;
+  }
+  pump(from, via, k, alive, delay = 0) {
+    return (async () => {
+      if (delay && !await sleep(delay * this.sp, alive)) return false;
+      const p = this.proton(from); SFX.play('proton');
+      const ok = await this.go(p, [from, ...via, poolPos(this.poolCount + k)], 1100, alive, {fade:.12});
+      if (ok) this.parkProton(p, this.poolCount + k); else p.remove();
+      return ok;
+    })();
+  }
+  parkProton(p, k) { p.remove(); this.pendingPool = (this.pendingPool || 0) + 1; this.protonEl(this.poolLayer, poolPos(k)); }
+  uptake(to, alive, delay = 0) {
+    return (async () => {
+      if (delay && !await sleep(delay * this.sp, alive)) return false;
+      const from = {x:to.x + (Math.random() - .5) * 60, y:Math.min(740, to.y + 150)};
+      const p = this.proton(from);
+      const ok = await this.go(p, [from, to], 700, alive, {fade:.2, o1:.2, sc1:.5});
+      p.remove(); return ok;
+    })();
+  }
+
+  /* ---------- state ---------- */
+  applyState(bump) {
+    super.applyState(bump);
+    const cur = this.current, G = ETC_GEO, L = this.L.stat;
+    L.replaceChildren();
+    this.cxEls.forEach((c, i) => { c.classList.toggle('done', i <= cur); c.classList.remove('now'); });
+    const pumped = this.ledgerAt(cur)['H⁺ (IMS)'] || 0;
+    this.poolCount = G.base + pumped; this.pendingPool = 0;
+    this.poolLayer = S('g', {}, L);
+    for (let k = 0; k < this.poolCount; k++) this.protonEl(this.poolLayer, poolPos(k)).dataset.k = k;
+    this.meter.setAttribute('width', (190 * Math.min(1, pumped / 16)).toFixed(1));
+    this.meterTxt.textContent = pumped ? `+${pumped} H⁺ pumped` : 'at rest';
+    this.Q = {
+      qA:this.quinone(L, G.pool.qA, cur >= 0 && cur < 2),
+      qB:this.quinone(L, G.pool.qB, cur >= 1 && cur < 2)
+    };
+    this.C = G.cyt.map(p => this.cytc(L, p, cur >= 2 && cur < 3));
+    this.chips = {
+      nadh:this.staticChip(cur < 0 ? 'NADH' : 'NAD⁺', 1, G.chips.nadh),
+      succ:this.staticChip(cur < 1 ? 'Succinate' : 'Fumarate', 1, G.chips.succ),
+      o2:cur < 3 ? this.staticChip('O₂', 1, G.chips.o2) : this.staticChip('H₂O', 2, G.chips.h2o),
+      adp:cur < 4 ? this.staticChip('ADP', 4, G.chips.adp) : null,
+      pi:cur < 4 ? this.staticChip('Pᵢ', 4, G.chips.pi) : null,
+      atp:cur >= 4 ? this.staticChip('ATP', 4, G.chips.atp) : null
+    };
+    this.lobes?.forEach(l => l.g.classList.remove('O', 'L', 'T'));
+  }
+  hide(el) { if (el) el.style.opacity = 0; }
+  makeChip(name, q) { const c = super.makeChip(name, q); c.at = (p, o = 1, sc = 1) => c.set(p, sc, o); return c; }
+
+  /* ---------- cards & narration ---------- */
+  colorize(t) {
+    const keys = Object.keys(COF).sort((a, b) => b.length - a.length).map(k => k.replace(/[()+]/g, '\\$&'));
+    const re = new RegExp(`(\\d+ )?(${keys.join('|')})`, 'g');
+    return esc(t).replace(re, (m, q, n) => `<span class="cof" style="--c:var(--${COF[n].k})">${m}</span>`).replace(/→/g, '<span class="arrow">→</span>');
+  }
+  showIntro() {
+    const d = this.def;
+    this.setCard(`
+      <div class="meta"><span class="badge">${d.steps.length} steps</span><span class="badge">Inner mitochondrial membrane</span></div>
+      <h2>How to use this map</h2>
+      <p>Press <b>Play</b> to follow electrons (glowing cyan dots) from NADH and FADH₂ through each complex to oxygen, and watch protons (red) get pumped into the intermembrane space.</p>
+      <p class="more">The gauge at the top right shows the proton gradient building up. The last step spends it: ATP synthase spins as protons flow back and releases ATP.</p>
+      <div class="eqn">${this.colorize(d.overall)}</div>`);
+  }
+  showStep(i) {
+    const st = this.def.steps[i], d = this.def;
+    const badges = [
+      `<span class="badge">Step ${i + 1} of ${d.steps.length}</span>`,
+      st.noPump ? `<span class="badge rev">${st.pump}</span>` : st.pump ? `<span class="badge irr">${st.pump}</span>` : '<span class="badge">No protons pumped</span>',
+      `<span class="badge">${st.loc}</span>`,
+      st.ctrl ? '<span class="badge ctl">Control point</span>' : ''
+    ].join('');
+    const dg = `<dl><div><dt>ΔG′°</dt><dd>${st.dg > 0 ? '+' : '−'}${Math.abs(st.dg)} kJ/mol</dd></div><div><dt>For</dt><dd>${st.dgNote}</dd></div><div><dt>Class</dt><dd>${st.cls}</dd></div></dl>`;
+    this.setCard(`
+      <div class="meta">${badges}</div>
+      <h2>${this.colorize(st.title)}</h2>
+      <div class="enz">${miniEnzymeSVG(st.ctrl)}<div><b>${esc(st.enzyme)}</b><small>${st.ec}</small></div></div>
+      <div class="eqn">${this.colorize(st.eq)}</div>
+      ${dg}
+      <p class="epath"><b>Electron path</b> ${this.colorize(st.path)}</p>
+      <p>${st.what}</p>
+      <p class="more">${st.more}</p>
+      ${st.reg ? `<div class="reg">${st.reg}</div>` : ''}`);
+  }
+  narration(st, i) { return `Step ${i + 1}. ${st.enzyme}. ${st.title}. ${st.what}`; }
+
+  /* ---------- animation ---------- */
+  async animateStep(i) {
+    const id = ++this.run, alive = this.alive(id), st = this.def.steps[i];
+    this.clearFx(); this.busy = i;
+    this.current = i - 1; this.applyState(false);
+    this.showStep(i); this.dots[i].classList.add('now');
+    this.cxEls[i].classList.add('now');
+    this.focus(st.geo.M);
+    this.say(this.narration(st, i));
+    SFX.play('enzyme');
+    if (!await sleep(350 * this.sp, alive)) return false;
+    const ok = await [this.stepI, this.stepII, this.stepIII, this.stepIV, this.stepV][i].call(this, alive);
+    if (!ok || !alive()) return false;
+    SFX.play('pop');
+    this.current = i; this.busy = null;
+    this.applyState(true);
+    this.dots[i].classList.add('now');
+    return true;
+  }
+
+  async stepI(alive) {
+    const G = ETC_GEO, C = G.ci;
+    this.hide(this.chips.nadh);
+    const nadh = this.makeChip('NADH', 1);
+    if (!await this.go(nadh, [G.chips.nadh, {x:C.fmn.x, y:C.fmn.y + 20}], 800, alive, {fade:.1})) return false;
+    SFX.play('catalyze');
+    nadh.remove();
+    const nad = this.makeChip('NAD⁺', 1);
+    const back = this.go(nad, [{x:C.fmn.x, y:C.fmn.y + 20}, G.chips.nadh], 800, alive, {fade:.1});
+    this.hide(this.Q.qA.g);
+    const q = this.quinone(this.L.fx, G.pool.qA, false);
+    const qIn = this.go(q, [G.pool.qA, C.q], 700, alive);
+    const wire = [C.fmn, ...C.fes, C.q];
+    const e1 = this.hop(wire, alive, 150);
+    const e2 = sleep(260 * this.sp, alive).then(ok => ok && this.hop(wire, alive, 150));
+    if ((await Promise.all([back, qIn, e1, e2])).includes(false)) return false;
+    const up = [this.uptake({x:C.q.x - 6, y:C.q.y + 6}, alive), this.uptake({x:C.q.x + 6, y:C.q.y + 6}, alive, 120)];
+    if ((await Promise.all(up)).includes(false)) return false;
+    q.set(true); SFX.play('redox');
+    const pumps = C.pumps.map((x, k) => this.pump({x, y:420}, [{x, y:350}, {x, y:250}], k, alive, k * 170));
+    const qOut = this.go(q, [C.q, G.pool.qA], 800, alive);
+    const ok = !(await Promise.all([...pumps, qOut])).includes(false);
+    nad.remove(); return ok;
+  }
+
+  async stepII(alive) {
+    const G = ETC_GEO, C = G.cii;
+    this.hide(this.chips.succ);
+    const suc = this.makeChip('Succinate', 1);
+    if (!await this.go(suc, [G.chips.succ, {x:C.fad.x, y:C.fad.y + 26}], 750, alive, {fade:.1})) return false;
+    suc.remove(); SFX.play('catalyze');
+    const fum = this.makeChip('Fumarate', 1);
+    const back = this.go(fum, [{x:C.fad.x, y:C.fad.y + 26}, G.chips.succ], 750, alive, {fade:.1});
+    const fad = this.makeChip('FADH₂', 1);
+    const fadShow = tween(900 * this.sp, (t, raw) => fad.set({x:C.fad.x + 62, y:C.fad.y}, .8, raw < .8 ? 1 : (1 - raw) / .2), ease.out, alive);
+    this.hide(this.Q.qB.g);
+    const q = this.quinone(this.L.fx, G.pool.qB, false);
+    const qIn = this.go(q, [G.pool.qB, C.q], 700, alive);
+    const wire = [C.fad, ...C.fes, C.q];
+    const e1 = this.hop(wire, alive, 170);
+    const e2 = sleep(280 * this.sp, alive).then(ok => ok && this.hop(wire, alive, 170));
+    if ((await Promise.all([back, fadShow, qIn, e1, e2])).includes(false)) return false;
+    fad.remove();
+    if ((await Promise.all([this.uptake({x:C.q.x - 6, y:C.q.y + 6}, alive), this.uptake({x:C.q.x + 6, y:C.q.y + 6}, alive, 120)])).includes(false)) return false;
+    q.set(true); SFX.play('redox');
+    const note = S('text', {x:400, y:236, 'text-anchor':'middle', class:'etc-note'}, this.L.fx);
+    note.textContent = 'No protons pumped';
+    const noteT = tween(1400 * this.sp, (t, raw) => note.setAttribute('opacity', (raw < .2 ? raw / .2 : raw > .8 ? (1 - raw) / .2 : 1).toFixed(2)), ease.io, alive);
+    const qOut = this.go(q, [C.q, G.pool.qB], 800, alive);
+    const ok = !(await Promise.all([noteT, qOut])).includes(false);
+    fum.remove(); return ok;
+  }
+
+  async cytRun(k, dock, reduced, alive, wireAfter) {
+    const G = ETC_GEO, c = this.cytc(this.L.fx, G.cyt[k], !reduced);
+    this.hide(this.C[k].g);
+    if (!await this.go(c, [G.cyt[k], dock], 550, alive)) return false;
+    if (wireAfter && !await wireAfter()) return false;
+    c.set(reduced);
+    SFX.play(reduced ? 'redox' : 'electron');
+    return this.go(c, [dock, G.cyt[k]], 550, alive);
+  }
+
+  async stepIII(alive) {
+    const G = ETC_GEO, C = G.ciii;
+    let pumped = 0;
+    for (const [n, key] of [[0, 'qA'], [1, 'qB']]) {
+      this.hide(this.Q[key].g);
+      const q = this.quinone(this.L.fx, G.pool[key], true);
+      if (!await this.go(q, [G.pool[key], {x:C.qo.x, y:G.pool[key].y}, C.qo], 800, alive)) return false;
+      q.set(false);
+      const out1 = [0, 1].map(j => this.pump({x:C.qo.x + (j ? 8 : -8), y:C.qo.y}, [{x:C.qo.x + (j ? 14 : -14), y:240}], pumped + j, alive, j * 120));
+      const toCyt = this.cytRun(n * 2, C.dock, true, alive, () => this.hop([C.qo, C.fes, C.c1, C.dock], alive, 200));
+      const toQi = this.hop([C.qo, C.bl, C.bh, C.qi], alive, 220);
+      if ((await Promise.all([...out1, toCyt, toQi])).includes(false)) return false;
+      pumped += 2;
+      const up = [this.uptake({x:C.qi.x - 5, y:C.qi.y}, alive), this.uptake({x:C.qi.x + 5, y:C.qi.y}, alive, 120)];
+      if ((await Promise.all(up)).includes(false)) return false;
+      const rq = this.quinone(this.L.fx, C.qi, true); rq.at(C.qi, 1, .75);
+      if (!await this.go(rq, [C.qi, {x:560, y:305}, C.qo], 650, alive, {sc0:.75, sc1:.75})) return false;
+      rq.set(false);
+      const out2 = [0, 1].map(j => this.pump({x:C.qo.x + (j ? 8 : -8), y:C.qo.y}, [{x:C.qo.x + (j ? 14 : -14), y:240}], pumped + j, alive, j * 120));
+      const toCyt2 = this.cytRun(n * 2 + 1, C.dock, true, alive, () => this.hop([C.qo, C.fes, C.c1, C.dock], alive, 200));
+      const rqOut = this.go(rq, [C.qo, {x:C.qo.x - 30, y:305}], 500, alive, {sc0:.75, sc1:.5, o1:0});
+      const qBack = this.go(q, [C.qo, {x:C.qo.x, y:G.pool[key].y}, G.pool[key]], 800, alive);
+      if ((await Promise.all([...out2, toCyt2, rqOut, qBack])).includes(false)) return false;
+      pumped += 2; rq.remove();
+    }
+    return true;
+  }
+
+  async stepIV(alive) {
+    const G = ETC_GEO, C = G.civ;
+    this.hide(this.chips.o2);
+    const o2 = this.makeChip('O₂', 1);
+    const o2In = this.go(o2, [G.chips.o2, {x:C.bnc.x, y:C.bnc.y + 90}, C.bnc], 1000, alive, {sc1:.6});
+    if (!await o2In) return false;
+    for (let k = 0; k < 4; k++) {
+      const wire = () => this.hop([C.dock, C.cua, C.a, C.bnc], alive, 190);
+      const run = this.cytRun(k, C.dock, false, alive, wire);
+      const pumped = this.pump({x:C.pumps[k % 2], y:430}, [{x:C.pumps[k % 2], y:350}, {x:C.pumps[k % 2], y:250}], k, alive, 700);
+      const sub = this.uptake({x:C.bnc.x + 4, y:C.bnc.y + 8}, alive, 500);
+      if ((await Promise.all([run, pumped, sub])).includes(false)) return false;
+    }
+    o2.remove(); SFX.play('water');
+    const w = [0, 1].map(j => {
+      const c = this.makeChip('H₂O', 1), end = {x:G.chips.h2o.x + (j ? 34 : -34), y:G.chips.h2o.y};
+      return this.go(c, [C.bnc, {x:C.bnc.x + (j ? 30 : -30), y:C.bnc.y + 180}, end], 1000, alive, {fade:.1, sc0:.6}).then(ok => (c.remove(), ok));
+    });
+    return !(await Promise.all(w)).includes(false);
+  }
+
+  async stepV(alive) {
+    const G = ETC_GEO, A = G.atp, states = ['O', 'L', 'T'];
+    const betas = this.lobes.filter(l => l.beta);
+    let taken = this.poolCount;
+    for (let b = 0; b < 4; b++) {
+      const flows = [];
+      for (let j = 0; j < 4; j++) {
+        taken--;
+        const el = this.poolLayer.querySelector(`[data-k="${taken}"]`), from = poolPos(taken);
+        el?.remove();
+        const p = this.proton(from);
+        flows.push(sleep(j * 140 * this.sp, alive).then(ok => ok && (SFX.play('proton'), this.go(p, [from, A.inIMS, A.half, {x:A.ring.x + 40, y:A.ring.y + 30}, A.out, {x:A.out.x + 10, y:A.out.y + 60}], 1300, alive, {fade:.1, o1:.15}))).then(ok => (p.remove(), ok)));
+      }
+      const left = 3 - b;
+      [['adp', 'ADP'], ['pi', 'Pᵢ']].forEach(([k, n]) => {
+        const c = this.chips[k]; if (!c) return;
+        if (left) c.querySelector('text').textContent = (left > 1 ? left + ' ' : '') + n; else this.hide(c);
+      });
+      const adp = this.makeChip('ADP', 1), pi = this.makeChip('Pᵢ', 1);
+      const site = betas[b % 3], sp = site.g.transform.baseVal.consolidate().matrix, sitePos = {x:sp.e, y:sp.f};
+      const bind = Promise.all([
+        this.go(adp, [G.chips.adp, sitePos], 900, alive, {fade:.1, sc1:.6}),
+        this.go(pi, [G.chips.pi, sitePos], 900, alive, {fade:.1, sc1:.6})
+      ]);
+      await sleep(300 * this.sp, alive);
+      SFX.play('rotor');
+      const a0 = this.rotorAngle, a1 = a0 + 2 * Math.PI / 3;
+      const spin = tween(1100 * this.sp, t => {
+        const a = a0 + (a1 - a0) * t;
+        this.setRotor(a);
+        this.gamma.setAttribute('transform', `translate(${A.f1.x} ${A.f1.y}) rotate(${(a * 180 / Math.PI).toFixed(1)})`);
+      }, ease.io, alive);
+      betas.forEach((l, k) => { l.g.classList.remove('O', 'L', 'T'); l.g.classList.add(states[(k - b + 3 * 4) % 3]); });
+      if ((await Promise.all([...flows, bind, spin])).flat().includes(false)) return false;
+      this.rotorAngle = a1;
+      adp.remove(); pi.remove();
+      SFX.play('atpGain');
+      const atp = this.makeChip('ATP', 1);
+      const end = {x:G.chips.atp.x + (b - 1.5) * 10, y:G.chips.atp.y - b * 3};
+      const rel = this.go(atp, [sitePos, {x:sitePos.x + 40, y:sitePos.y + 70}, end], 800, alive, {sc0:.6});
+      if (!await rel) return false;
+      atp.remove();
+      this.tally?.remove();
+      this.tally = this.staticChip('ATP', b + 1, G.chips.atp);
+      this.L.fx.appendChild(this.tally);
+    }
+    return true;
+  }
+}
 /* ================= Regulation lab ================= */
 const INPUTS = [
   {k:'energy', name:'Energy charge', lo:'Low ATP, high AMP', hi:'High ATP'},
@@ -1742,6 +2336,7 @@ const views = {
   glycolysis:new PathwayView(document.getElementById('page-glycolysis'), GLYCOLYSIS),
   gluconeogenesis:new PathwayView(document.getElementById('page-gluconeogenesis'), GLUCONEOGENESIS),
   krebs:new PathwayView(document.getElementById('page-krebs'), KREBS),
+  etc:new EtcView(document.getElementById('page-etc'), ETC),
   regulation:new RegulationLab(document.getElementById('page-regulation'))
 };
 let active = null;
@@ -1751,7 +2346,9 @@ function route_() {
   if (active && active !== name) { views[active].onHide(); document.getElementById('page-' + active).classList.remove('on'); }
   document.getElementById('page-' + name).classList.add('on');
   document.querySelectorAll('.tabs a').forEach(a => a.getAttribute('href') === '#/' + name ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
-  const titles = {glycolysis:'Glycolysis', gluconeogenesis:'Gluconeogenesis', krebs:'Krebs cycle', regulation:'Regulation lab'};
+  const tab = document.querySelector(`.tabs a[href="#/${name}"]`), bar = tab?.parentElement;
+  if (bar && bar.scrollWidth > bar.clientWidth) bar.scrollTo({left:tab.offsetLeft - (bar.clientWidth - tab.offsetWidth) / 2, behavior:'smooth'});
+  const titles = {glycolysis:'Glycolysis', gluconeogenesis:'Gluconeogenesis', krebs:'Krebs cycle', etc:'Electron transport chain', regulation:'Regulation lab'};
   document.title = `${titles[name]} – Metabolism in Motion`;
   if (active !== name) { active = name; window.scrollTo(0, 0); views[name].onShow(); }
 }
