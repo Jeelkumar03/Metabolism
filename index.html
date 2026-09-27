@@ -673,12 +673,17 @@ const Narrator = (() => {
   const ss = window.speechSynthesis;
   const supported = !!ss && typeof SpeechSynthesisUtterance !== 'undefined';
   let on = supported && Prefs.get('mim-voice', true), voice = null, token = 0, captionFn = null, unlocked = false;
-  const PREF = /Samantha|Ava|Allison|Daniel|Serena|Karen|Moira|Google US English|Google UK English Female|Microsoft (Aria|Jenny|Sonia|Guy)|Natural|Enhanced|Premium/i;
+  const MALE = /\b(Daniel|Aaron|Arthur|Evan|Nathan|Tom|Alex|Oliver|Reed|Rishi|Gordon|Lee|Fred|Rocko|Eddy|Google UK English Male|Microsoft (Guy|Davis|Andrew|Brian|Christopher|Eric|Roger|Steffan|Ryan|Thomas|Ravi|Prabhat|William|Liam)|male)\b/i;
+  const QUALITY = /Premium|Enhanced|Natural|Neural|Online/i;
+  let pitch = 1;
   function pickVoice() {
     if (!supported) return;
     const vs = ss.getVoices().filter(v => /^en(-|_|$)/i.test(v.lang));
-    voice = vs.find(v => PREF.test(v.name) && v.localService) || vs.find(v => PREF.test(v.name)) ||
-            vs.find(v => /en-(US|GB|IN|AU)/i.test(v.lang) && v.localService) || vs[0] || null;
+    const male = vs.filter(v => MALE.test(v.name) && !/female/i.test(v.name));
+    const rank = v => (QUALITY.test(v.name) ? 2 : 0) + (v.localService ? 1 : 0) + (/en-(US|GB)/i.test(v.lang) ? .5 : 0);
+    male.sort((a, b) => rank(b) - rank(a));
+    voice = male[0] || vs.find(v => v.localService) || vs[0] || null;
+    pitch = male[0] ? 1 : .8;
   }
   if (supported) { pickVoice(); ss.addEventListener?.('voiceschanged', pickVoice); }
   function say(text, my, rate) {
@@ -686,7 +691,7 @@ const Narrator = (() => {
       if (my !== token) return res(false);
       const u = new SpeechSynthesisUtterance(text);
       if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = 'en-US';
-      u.rate = rate; u.pitch = 1;
+      u.rate = rate; u.pitch = pitch;
       let done = false;
       const fin = ok => { if (!done) { done = true; clearTimeout(guard); res(ok && my === token); } };
       const guard = setTimeout(() => fin(true), 1500 + text.length * 95 / rate);
