@@ -79,6 +79,14 @@ button,select,input{font:inherit;color:inherit}
 .stage{background:var(--panel);border:1px solid var(--line);border-radius:22px;position:relative;overflow:hidden;box-shadow:var(--shadow)}
 .stage .scroll{height:calc(100vh - 200px);min-height:520px;overflow:auto;overscroll-behavior:contain}
 .stage svg.map{display:block;width:100%;height:auto;min-width:660px}
+.stage-hint{transition:opacity .3s}
+.stage-cap{position:absolute;left:12px;right:12px;bottom:12px;font-size:15px;line-height:1.45;color:var(--ink);background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);border-left:4px solid var(--enzyme);padding:9px 14px;border-radius:14px;box-shadow:var(--shadow);pointer-events:none;opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s}
+.stage.talking .stage-cap{opacity:1;transform:none}
+.stage.talking .stage-hint{opacity:0}
+.theme-btn[aria-pressed="false"]{color:var(--muted);opacity:.75}
+.theme-btn[aria-pressed="false"] .on-only,.theme-btn[aria-pressed="true"] .off-only{display:none}
+.theme-btn[hidden]{display:none}
+.top-actions{display:flex;gap:8px;flex:none}
 .stage-hint{position:absolute;left:14px;bottom:12px;font-size:12.5px;color:var(--muted);background:var(--panel-2);border:1px solid var(--line);padding:5px 10px;border-radius:999px;pointer-events:none}
 .bench{position:sticky;top:78px;display:flex;flex-direction:column;gap:12px}
 
@@ -261,6 +269,7 @@ button,select,input{font:inherit;color:inherit}
   .reg-grid{grid-template-columns:1fr}
   .top{padding:8px 12px;gap:10px}
   .brand span{display:none}
+  .top-actions{gap:5px}.top-actions .theme-btn{width:34px;height:34px}.stage-cap{font-size:14px;bottom:8px;left:8px;right:8px}
   .page{padding:16px 12px 40px}
 }
 @media (prefers-reduced-motion:reduce){
@@ -281,9 +290,17 @@ button,select,input{font:inherit;color:inherit}
     <a href="#/krebs" style="--c:var(--tca)"><i></i>Krebs cycle</a>
     <a href="#/regulation" style="--c:var(--atp)"><i></i>Regulation</a>
   </nav>
+  <div class="top-actions">
+  <button class="theme-btn" id="sfxBtn" aria-pressed="true" aria-label="Sound effects" title="Sound effects">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"/><path class="on-only" d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/><path class="off-only" d="m16 9 6 6m0-6-6 6"/></svg>
+  </button>
+  <button class="theme-btn" id="voiceBtn" aria-pressed="true" aria-label="Narration" title="Narration">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/><path class="on-only" d="M8 9.5h8M8 12.5h5"/><path class="off-only" d="m3 3 18 18"/></svg>
+  </button>
   <button class="theme-btn" id="themeBtn" aria-label="Switch light or dark theme">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>
   </button>
+  </div>
 </header>
 <main>
   <section class="page" id="page-glycolysis"></section>
@@ -559,6 +576,154 @@ KREBS.summary = {
   title:'One turn complete',
   body:'Two carbons in as acetyl-CoA, two out as CO₂. Captured: 3 NADH, 1 FADH₂ and 1 GTP. After oxidative phosphorylation that is about 10 ATP per turn, or 20 per glucose.'
 };
+
+/* ================= audio: synthesized SFX + narration ================= */
+const Prefs = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v === '1'; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, v ? '1' : '0'); } catch (e) {} }
+};
+
+const SFX = (() => {
+  let ctx = null, bus = null, noiseBuf = null, on = Prefs.get('mim-sfx', true);
+  function ensure() {
+    if (!ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+      const comp = ctx.createDynamicsCompressor();
+      bus = ctx.createGain(); bus.gain.value = .55;
+      bus.connect(comp).connect(ctx.destination);
+      noiseBuf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+      const ch = noiseBuf.getChannelData(0);
+      for (let i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1;
+    }
+    if (ctx.state !== 'running') ctx.resume().catch(() => {});
+    return ctx;
+  }
+  function env(g, t0, attack, dur, vol) {
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(vol, t0 + attack);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  }
+  function tone({f = 440, f2 = f, type = 'sine', at = 0, dur = .15, vol = .25, attack = .006}) {
+    const t0 = ctx.currentTime + at, o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(f, t0);
+    if (f2 !== f) o.frequency.exponentialRampToValueAtTime(f2, t0 + dur);
+    env(g, t0, attack, dur, vol);
+    o.connect(g).connect(bus); o.start(t0); o.stop(t0 + dur + .05);
+  }
+  function noise({at = 0, dur = .35, vol = .12, f = 600, f2 = 2400, q = 1.2, type = 'bandpass', attack = .04}) {
+    const t0 = ctx.currentTime + at, s = ctx.createBufferSource(), fl = ctx.createBiquadFilter(), g = ctx.createGain();
+    s.buffer = noiseBuf;
+    fl.type = type; fl.Q.value = q;
+    fl.frequency.setValueAtTime(f, t0); fl.frequency.exponentialRampToValueAtTime(f2, t0 + dur);
+    env(g, t0, attack, dur, vol);
+    s.connect(fl).connect(g).connect(bus); s.start(t0); s.stop(t0 + dur + .05);
+  }
+  const lib = {
+    enzyme() { tone({f:180, f2:420, type:'triangle', dur:.22, vol:.22}); tone({f:640, at:.08, dur:.18, vol:.1}); },
+    whoosh() { noise({f:350, f2:2600, dur:.55, vol:.14}); },
+    catalyze() {
+      noise({f:4000, f2:4000, type:'highpass', dur:.04, vol:.25, attack:.002});
+      tone({f:140, f2:60, type:'sine', dur:.16, vol:.35});
+      tone({f:880, dur:.6, vol:.14, at:.03}); tone({f:1318, dur:.45, vol:.07, at:.03});
+    },
+    release() { noise({f:2800, f2:450, dur:.5, vol:.11}); },
+    atpSpend() { tone({f:392, f2:196, type:'triangle', dur:.28, vol:.2}); },
+    atpGain() { [659, 880, 1319].forEach((f, k) => tone({f, type:'triangle', at:k * .07, dur:.22, vol:.16})); },
+    redox() { [523, 784].forEach((f, k) => tone({f, at:k * .06, dur:.35, vol:.13})); tone({f:1568, at:.12, dur:.25, vol:.05}); },
+    gas() { [0, 1, 2, 3].forEach(k => tone({f:260 + k * 60, f2:900 + k * 150, at:k * .075, dur:.07, vol:.14})); },
+    water() { tone({f:1400, f2:380, dur:.1, vol:.2}); tone({f:900, f2:500, at:.11, dur:.06, vol:.08}); },
+    pop() { tone({f:520, f2:820, dur:.09, vol:.16}); },
+    tick(v = .5) { tone({f:500 + v * 900, dur:.035, vol:.07, type:'triangle', attack:.002}); },
+    select() { tone({f:660, dur:.07, vol:.12}); tone({f:990, at:.06, dur:.09, vol:.1}); },
+    complete() { [523, 659, 784, 1047].forEach((f, k) => tone({f, type:'triangle', at:k * .11, dur:.5, vol:.15})); }
+  };
+  let lastTick = 0;
+  return {
+    play(name, arg) {
+      if (!on || !ensure()) return;
+      if (name === 'tick') { const n = performance.now(); if (n - lastTick < 55) return; lastTick = n; }
+      try { lib[name](arg); } catch (e) {}
+    },
+    unlock() { if (on) ensure(); },
+    get on() { return on; },
+    set on(v) { on = !!v; Prefs.set('mim-sfx', on); if (on) ensure(); }
+  };
+})();
+
+const SPEECH_MAP = [
+  [/ΔG′°/g, 'delta G standard'], [/HCO₃⁻/g, 'bicarbonate'], [/Mg²⁺/g, 'magnesium'], [/Ca²⁺/g, 'calcium'],
+  [/NADH\/NAD⁺/g, 'N A D H to N A D plus'], [/NAD⁺/g, 'N A D plus'], [/NADPH/g, 'N A D P H'], [/NADH/g, 'N A D H'],
+  [/FADH₂/g, 'F A D H 2'], [/\bFAD\b/g, 'F A D'], [/CO₂/g, 'C O 2'], [/H₂O/g, 'water'], [/Pᵢ/g, 'inorganic phosphate'],
+  [/H⁺/g, 'H plus'], [/CoA-SH/g, 'coenzyme A'], [/\bCoA\b/g, 'co-A'], [/α-KG/g, 'alpha-keto-glutarate'],
+  [/PEPCK/g, 'P E P C K'], [/\bPEP\b/g, 'P E P'], [/FBPase/g, 'F B Pase'], [/\bPFK/g, 'P F K'], [/\bPDH\b/g, 'P D H'],
+  [/\bMDH\b/g, 'M D H'], [/\bPKA\b/g, 'P K A'], [/F2,6BP/g, 'fructose 2,6-bisphosphate'], [/\bG6P\b/g, 'glucose 6-phosphate'],
+  [/\bC(\d)\b/g, 'carbon $1'], [/kJ\/mol/g, 'kilojoules per mole'], [/\bEC [\d.]+/g, ''],
+  [/α-/g, 'alpha-'], [/α/g, 'alpha '], [/β/g, 'beta '], [/Δ/g, 'delta '], [/⇌/g, ' reversibly to '], [/→/g, ' to '],
+  [/−(?=\d)/g, 'minus '], [/≈/g, 'about '], [/[–·]/g, ' '], [/₂/g, '2'], [/₃/g, '3'], [/²/g, '2'],
+  [/⁺/g, ' plus'], [/⁻/g, ' minus'], [/[′°]/g, ''], [/\s{2,}/g, ' ']
+];
+const toSpeech = s => SPEECH_MAP.reduce((t, [re, r]) => t.replace(re, r), s).trim();
+const splitSentences = (s, max = 170) => s.replace(/\s+/g, ' ').trim().split(/(?<=[.!?])\s+(?=[A-Za-z0-9(])/).filter(Boolean)
+  .reduce((acc, x) => { const l = acc.length - 1; if (l >= 0 && acc[l].length + x.length < max && acc[l].length < 60) acc[l] += ' ' + x; else acc.push(x); return acc; }, []);
+
+const Narrator = (() => {
+  const ss = window.speechSynthesis;
+  const supported = !!ss && typeof SpeechSynthesisUtterance !== 'undefined';
+  let on = supported && Prefs.get('mim-voice', true), voice = null, token = 0, captionFn = null, unlocked = false;
+  const PREF = /Samantha|Ava|Allison|Daniel|Serena|Karen|Moira|Google US English|Google UK English Female|Microsoft (Aria|Jenny|Sonia|Guy)|Natural|Enhanced|Premium/i;
+  function pickVoice() {
+    if (!supported) return;
+    const vs = ss.getVoices().filter(v => /^en(-|_|$)/i.test(v.lang));
+    voice = vs.find(v => PREF.test(v.name) && v.localService) || vs.find(v => PREF.test(v.name)) ||
+            vs.find(v => /en-(US|GB|IN|AU)/i.test(v.lang) && v.localService) || vs[0] || null;
+  }
+  if (supported) { pickVoice(); ss.addEventListener?.('voiceschanged', pickVoice); }
+  function say(text, my, rate) {
+    return new Promise(res => {
+      if (my !== token) return res(false);
+      const u = new SpeechSynthesisUtterance(text);
+      if (voice) { u.voice = voice; u.lang = voice.lang; } else u.lang = 'en-US';
+      u.rate = rate; u.pitch = 1;
+      let done = false;
+      const fin = ok => { if (!done) { done = true; clearTimeout(guard); res(ok && my === token); } };
+      const guard = setTimeout(() => fin(true), 1500 + text.length * 95 / rate);
+      u.onend = () => fin(true);
+      u.onerror = () => fin(false);
+      ss.speak(u);
+    });
+  }
+  return {
+    supported,
+    get on() { return on; },
+    set on(v) { on = supported && !!v; Prefs.set('mim-voice', on); if (!on) this.cancel(); },
+    set caption(fn) { captionFn = fn; },
+    unlock() {
+      if (unlocked || !supported || !on) return;
+      unlocked = true;
+      const u = new SpeechSynthesisUtterance(' '); u.volume = 0; ss.speak(u);
+    },
+    async speak(text, rate = 1) {
+      const my = ++token;
+      if (supported) ss.cancel();
+      if (!on || !text) { captionFn?.(''); return true; }
+      await new Promise(r => setTimeout(r, 60));
+      for (const s of splitSentences(text)) {
+        if (my !== token) return false;
+        captionFn?.(s);
+        if (!await say(toSpeech(s), my, rate)) break;
+      }
+      if (my === token) captionFn?.('');
+      return my === token;
+    },
+    cancel() { token++; if (supported) ss.cancel(); captionFn?.(''); }
+  };
+})();
+
+['pointerdown', 'keydown', 'touchend'].forEach(ev => document.addEventListener(ev, () => { SFX.unlock(); Narrator.unlock(); }, {passive:true}));
+document.addEventListener('visibilitychange', () => { if (document.hidden) Narrator.cancel(); });
 /* ================= Utilities ================= */
 const SVGNS = 'http://www.w3.org/2000/svg';
 const S = (tag, attrs = {}, parent) => {
@@ -720,7 +885,7 @@ class PathwayView {
         </div>
       </div>
       <div class="pw-body">
-        <div class="stage"><div class="scroll"></div><div class="stage-hint">Click any molecule or enzyme to jump to its step</div></div>
+        <div class="stage"><div class="scroll"></div><div class="stage-hint" aria-hidden="true">Tap any molecule or enzyme to jump to its step</div><div class="stage-cap" aria-live="polite"></div></div>
         <aside class="bench">
           <div class="controls">
             <button class="btn icon" data-act="reset" aria-label="Back to start">${ICON.reset}</button>
@@ -744,6 +909,8 @@ class PathwayView {
     this.root.querySelector('[data-act="next"]').onclick = () => this.next();
     this.playBtn.onclick = () => this.togglePlay();
     this.root.querySelector('select').onchange = e => { this.speed = +e.target.value; };
+    this.cap = this.root.querySelector('.stage-cap');
+    this.capFn = t => { if (t) this.cap.textContent = t; this.root.querySelector('.stage').classList.toggle('talking', !!t); };
     this.buildSVG();
     this.buildTimeline();
     this.buildLedger();
@@ -895,7 +1062,7 @@ class PathwayView {
     sum.innerHTML = '<div class="dots"><button class="dot sum">Overview</button><button class="dot sum">Summary</button></div>';
     const [ov, sm] = sum.querySelectorAll('button');
     ov.onclick = () => this.reset();
-    sm.onclick = () => { this.stop(); this.run++; this.clearFx(); this.current = this.def.steps.length - 1; this.busy = null; this.applyState(false); this.showSummary(); };
+    sm.onclick = () => { this.stop(); this.run++; this.clearFx(); this.current = this.def.steps.length - 1; this.busy = null; this.applyState(false); this.showSummary(true); };
     tl.appendChild(sum);
   }
 
@@ -952,7 +1119,21 @@ class PathwayView {
       this.lvals[k] = v;
     });
   }
-  clearFx() { this.L.fx.replaceChildren(); }
+  clearFx() { this.L.fx.replaceChildren(); Narrator.cancel(); }
+  get voiceRate() { return Math.min(1.5, Math.max(.8, Math.sqrt(this.speed))); }
+  say(text) { Narrator.caption = this.capFn; this.speech = Narrator.speak(text, this.voiceRate); return this.speech; }
+  narration(st, i) {
+    const d = this.def, m = st.mult, nm = id => (m > 1 ? m + ' ' : '') + d.nodes[id].label.replace('\n', ' ');
+    const list = a => a.length > 1 ? a.slice(0, -1).join(', ') + ' and ' + a.at(-1) : a[0] || '';
+    const cof = (l, verb) => l.length ? ` It ${verb} ${list(l.map(([n, q]) => (q * m > 1 ? q * m + ' ' : '') + n))}.` : '';
+    return `Step ${i + 1}. ${st.enzyme}. ${list(st.from.map(nm))} ${st.from.length > 1 || m > 1 ? 'become' : 'becomes'} ${list(st.to.map(nm))}.` +
+      `${cof(st.in, 'uses')}${cof(st.out, 'releases')} ${st.what}`;
+  }
+  static sfxFor(list, dir) {
+    const has = re => list.some(([n]) => re.test(n));
+    if (dir === 'in') return has(/^(ATP|GTP)$/) ? 'atpSpend' : has(/H₂O/) ? 'water' : null;
+    return has(/^(ATP|GTP)$/) ? 'atpGain' : has(/NADH|FADH₂/) ? 'redox' : has(/CO₂/) ? 'gas' : has(/H₂O/) ? 'water' : null;
+  }
 
   /* ---------- cards ---------- */
   setCard(html) {
@@ -968,8 +1149,12 @@ class PathwayView {
       <p class="more">Beads inside each molecule count its carbons (violet) and phosphates (pink). Watch them change as groups are added or lost.</p>
       <div class="eqn">${this.eqnFromText(d.overall)}</div>`);
   }
-  showSummary() {
+  showSummary(announce) {
     const d = this.def, tot = this.ledgerAt(d.steps.length - 1);
+    if (announce) {
+      SFX.play('complete');
+      this.say(`${d.title} complete. ${d.summary.title}. ${d.summary.body.replace(/<[^>]+>/g, '')}`);
+    }
     const parts = d.ledger.filter(k => tot[k]).map(k => `${tot[k] > 0 ? '+' : '−'}${Math.abs(tot[k])} ${k}`).join(', ');
     this.dots.forEach(b => b.classList.remove('now'));
     this.setCard(`
@@ -1011,7 +1196,7 @@ class PathwayView {
   /* ---------- navigation ---------- */
   stop() { this.playing = false; this.playBtn.innerHTML = `${ICON.play}Play`; }
   togglePlay() {
-    if (this.playing) { this.stop(); return; }
+    if (this.playing) { this.stop(); Narrator.cancel(); return; }
     this.playing = true; this.playBtn.innerHTML = `${ICON.pause}Pause`;
     this.loop();
   }
@@ -1019,9 +1204,11 @@ class PathwayView {
     while (this.playing && this.visible) {
       if (this.busy != null) { await sleep(120); continue; }
       const n = this.current + 1;
-      if (n >= this.def.steps.length) { this.stop(); this.showSummary(); break; }
+      if (n >= this.def.steps.length) { this.stop(); this.showSummary(true); break; }
       const ok = await this.animateStep(n);
       if (!ok || !this.playing) break;
+      if (this.speech) await this.speech;
+      if (!this.playing) break;
       await sleep(550 * this.sp);
     }
   }
@@ -1030,7 +1217,7 @@ class PathwayView {
     const base = this.busy != null ? this.busy : this.current;
     if (base + 1 >= this.def.steps.length) {
       if (this.busy != null) { this.run++; this.clearFx(); this.current = base; this.busy = null; this.applyState(true); }
-      this.showSummary(); return;
+      this.showSummary(true); return;
     }
     this.goTo(base + 1, true, true);
   }
@@ -1156,8 +1343,13 @@ class PathwayView {
     st.labelEl.classList.add('hide'); st.cofEl?.classList.add('hide');
     st.from.forEach(n => this.nodeEls[n].classList.add('is-sub'));
 
+    this.say(this.narration(st, i));
     const enz = this.makeEnzyme(st);
+    SFX.play('enzyme');
     if (!await tween(420 * sp, t => enz.scale(t), ease.back, alive)) return false;
+    SFX.play('whoosh');
+    const sIn = PathwayView.sfxFor(st.in, 'in');
+    if (sIn) setTimeout(() => alive() && SFX.play(sIn), 650 * sp);
 
     const subs = st.from.map(nid => {
       const e = st.built.find(b => b.spec.f === nid) || st.built[0], n = d.nodes[nid];
@@ -1178,6 +1370,7 @@ class PathwayView {
     ins.forEach(c => c.remove());
     subs.forEach(s => s.tk.g.setAttribute('opacity', '.0'));
 
+    SFX.play('catalyze');
     await enz.catalyze(sp, alive, this.L.fx, g.P);
     if (!alive()) return false;
     subs.forEach(s => s.tk.remove());
@@ -1187,6 +1380,9 @@ class PathwayView {
       return {nid, r:route([seg(g.P, e.pointAt(e.te)), part(e, e.te, 1), seg(e.pointAt(1), n)]), tk:this.makeTokens(nid, st)};
     });
     const outs = st.out.map(([n, q]) => this.makeChip(n, q * st.mult));
+    SFX.play('release');
+    const sOut = PathwayView.sfxFor(st.out, 'out');
+    if (sOut) setTimeout(() => alive() && SFX.play(sOut), 380 * sp);
     const outMoves = outs.map((c, k) => {
       const end = V.add(V.add(g.M, V.mul(g.O, g.cd)), V.mul(g.T, g.shift + k * 40));
       const ctrl = V.add(V.add(g.M, V.mul(g.O, g.cd * .3)), V.mul(g.T, g.shift * .5));
@@ -1197,6 +1393,7 @@ class PathwayView {
       ...outMoves
     ]);
     if (ok2.includes(false)) return false;
+    SFX.play('pop');
     prods.forEach(p => {
       p.tk.remove();
       const el = this.nodeEls[p.nid];
@@ -1221,6 +1418,10 @@ class PathwayView {
     this.visible = true;
     if (!this.revealed) {
       this.revealed = true;
+      requestAnimationFrame(() => {
+        const sc = this.scroll, k = this.svg.clientWidth / this.def.W, m = this.def.steps[0]?.geo.M;
+        if (k && m && sc.scrollWidth > sc.clientWidth) sc.scrollLeft = m.x * k - sc.clientWidth / 2;
+      });
       if (!reduceMotion) {
         this.def.steps.forEach((st, i) => st.pathEls.forEach(p => {
           const len = p.getTotalLength();
@@ -1335,10 +1536,13 @@ class RegulationLab {
 
     this.root.querySelectorAll('[data-p]').forEach(b => b.onclick = () => {
       this.v = {...PRESETS.find(p => p.id === b.dataset.p).v}; this.preset = b.dataset.p; this.update();
+      SFX.play('select');
+      this.narrate(b.firstChild.textContent);
     });
     INPUTS.forEach(i => {
       const el = this.root.querySelector(`#in-${i.k}`);
-      el.oninput = () => { this.v[i.k] = el.value / 100; this.preset = null; this.update(); };
+      el.oninput = () => { this.v[i.k] = el.value / 100; this.preset = null; this.update(); SFX.play('tick', el.value / 100); };
+      el.onchange = () => this.narrate();
     });
     this.preset = 'fed';
     this.buildCards();
@@ -1518,7 +1722,13 @@ class RegulationLab {
     requestAnimationFrame(t => this.tick(t));
   }
   onShow() { this.visible = true; this.last = 0; requestAnimationFrame(t => this.tick(t)); }
-  onHide() { this.visible = false; }
+  onHide() { this.visible = false; Narrator.cancel(); }
+  narrate(lead) {
+    const verdict = this.root.querySelector('.verdict').textContent;
+    const ins = [...this.root.querySelectorAll('.ins p')].map(p => p.textContent).join(' ');
+    Narrator.caption = null;
+    Narrator.speak(`${lead ? lead + '. ' : ''}${verdict} ${ins}`);
+  }
   onKey() {}
 }
 
@@ -1543,6 +1753,16 @@ function route_() {
 addEventListener('hashchange', route_);
 document.addEventListener('keydown', e => active && views[active].onKey(e));
 route_();
+
+/* audio toggles */
+(() => {
+  const sfx = document.getElementById('sfxBtn'), voice = document.getElementById('voiceBtn');
+  const sync = () => { sfx.setAttribute('aria-pressed', SFX.on); voice.setAttribute('aria-pressed', Narrator.on); };
+  if (!Narrator.supported) voice.hidden = true;
+  sfx.onclick = () => { SFX.on = !SFX.on; sync(); SFX.play('select'); };
+  voice.onclick = () => { Narrator.on = !Narrator.on; sync(); if (Narrator.on) Narrator.speak('Narration on.'); };
+  sync();
+})();
 
 /* theme */
 (() => {
